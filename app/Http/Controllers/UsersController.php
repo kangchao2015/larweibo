@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Log;
 
 class UsersController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         echo 123;
     }
 
@@ -22,7 +23,13 @@ class UsersController extends Controller
         return view('users.show', compact('user'));
     }
 
-    public function store(Request $request){
+    public function edit(User $user)
+    {
+        return view('users.edit', compact('user'));
+    }
+
+    public function store(Request $request)
+    {
 
         $this->validate($request, [
             'name' => 'required|max:50',
@@ -41,6 +48,25 @@ class UsersController extends Controller
 
 
         return redirect()->route('users.show', [$user]);
+    }
+
+    public function update(User $user, Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|max:50',
+            'password' => 'nullable|confirmed|min:6'
+        ]);
+
+        $data = [];
+        $data['name'] = $request->name;
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password);
+        }
+        $user->update($data);
+
+        session()->flash('success', '个人资料更新成功！');
+
+        return redirect()->route('users.show', $user);
     }
 
 }
