@@ -10,6 +10,8 @@ class UsersController extends Controller
 {
     public function __construct()
     {
+
+
         $this->middleware('auth', [
           'except' => [
             'create', 'store','index'
@@ -23,7 +25,8 @@ class UsersController extends Controller
 
     public function index()
     {
-        echo 123;
+        $users = User::paginate(15);
+        return view('users.index', compact('users'));
     }
 
     public function create()
