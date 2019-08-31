@@ -18,6 +18,7 @@ class SessionsController extends Controller
 
     public function create()
     {
+        echo 123;
         return view('sessions.create');
     }
 
