@@ -37,6 +37,7 @@ $factory->define(User::class, function (Faker $faker) {
         'created_at' => $date_time,
         'updated_at' => $date_time,
         'count' => $faker->numberBetween('0','1000000'),
-        'html' =>$faker->randomHtml()
+        'html' =>$faker->randomHtml(),
+        'activated' => true
     ];
 });

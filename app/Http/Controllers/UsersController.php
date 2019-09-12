@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
@@ -89,6 +90,30 @@ class UsersController extends Controller
         session()->flash('success', '个人资料更新成功！');
 
         return redirect()->route('users.show', $user);
+    }
+
+    public function sendEmailConfirmation($user){
+        $view = 'emails.confirm';
+        $data = compact('user');
+        $from = 'kangchaolove2009@163.com';
+        $name = 'kangchao';
+        $to = $user->email;
+        $subject = 'test email';
+
+        Mail::send($view, $data, function($message) use($from , $name, $to, $subject){
+            $message->from($from, $name)->to($to)->subject($subject);
+        });
+    }
+
+    public function confirmEmail($token){
+        $user = User::where('activation_token', $token)->firstOrFail();
+        $user->activated = true;
+        $user->activation_token = null;
+        $user->save();
+
+        Auth::login($user);
+        session()->falsh('success', '恭喜登录成功');
+        return redirect()->route('user.show', [$user]);
     }
 
 }
